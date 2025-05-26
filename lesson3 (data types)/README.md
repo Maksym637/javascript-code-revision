@@ -1,7 +1,7 @@
 - - -
 ### Data types
 Primitive data types
-- Number: `let age = 23;`
+- Number: `let age = 22;`
 - String: `let firstName = "Maksym";`
 - Boolean: `let fullAge = true;`
 - Undefined: Variable that is not yet defined `let children;`
