@@ -20,9 +20,12 @@
 - - -
 ### JavaScript Engine and Runtime
 __Engine__ is a program that executes JS code
+
 __Compilation__: Entire code is converted into machine code at once, and written to a binary that can be executed by a computer (Eg.: C)
+
 __Interpretation__: Interpreter runs through the source code and executes it line by line (Eg.: JS)
+
 JS runtime:
-    - Runtime in the browser
-    - Runtime in the `node.js`
+- Runtime in the browser
+- Runtime in the `node.js`
 - - -
