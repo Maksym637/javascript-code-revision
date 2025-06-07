@@ -29,3 +29,30 @@ JS runtime:
 - Runtime in the browser
 - Runtime in the `node.js`
 - - -
+### Execution contexts and the call stack
+#### What is an execution context?
+1. Creation of _global execution context_ (for top-level code)
+    - Execution context - is an environment in which a piece of JavaScript is executed. Stores all the necessary information for some code to be executed
+2. Execution of _top-level code_ (inside global EC)
+3. Execution of _functions_ and waiting for _callbacks_
+
+#### What is inside execution context?
+1. Variable environment
+    - `let`, `const`, and `var` declarations
+    - Functions
+    - `arguments` object
+2. Scope chain
+3. `this` keyword
+
+#### The call stack
+The __call stack__ is a "place" where execution contexts get stacked on top of each other, to keep track of where we are in the execution
+- - -
+### Scope and the scope chain
+_Scoping:_ How our program's variables are __organized__ and __accessed__. "Where do variables live?" or "Where can we access a certain variable, and where not?"
+
+_Scope_: Space or environment in which a certain variable is __declared__ (variable environment in case of functions). There is __global__ scope, __function__ scope, and __block__ scope
+
+_Scope of a variable_: Region of our code where a certain variable can be __accessed__
+
+!Scope has access to variables from all __outer__ scopes = scope chain. (Scope chain - has nothing to do with order in which functions were called)
+- - -
