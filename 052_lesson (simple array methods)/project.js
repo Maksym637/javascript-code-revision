@@ -57,10 +57,68 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
-const currencies = new Map([
-  ["USD", "United States dollar"],
-  ["EUR", "Euro"],
-  ["GBP", "Pound sterling"],
-]);
+const checkMovementType = function (movement) {
+  return movement > 0 ? "deposit" : "withdrawal";
+};
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = "";
+
+  movements.forEach(function (movement, idx) {
+    const html = `
+      <div class="movements__row">
+        <div class="movements__type movements__type--${checkMovementType(
+          movement
+        )}">${idx + 1} ${checkMovementType(movement)}</div>
+        <div class="movements__value">${movement}€</div>
+      </div>
+    `;
+
+    containerMovements.insertAdjacentHTML("afterbegin", html);
+  });
+};
+
+displayMovements(account1.movements);
+
+const displayBalance = function (movements) {
+  const balance = movements.reduce(
+    (accumulator, movement) => accumulator + movement,
+    0
+  );
+  labelBalance.textContent = `${balance} EUR`;
+};
+
+displayBalance(account1.movements);
+
+const displaySummary = function (movements) {
+  const incomes = movements
+    .filter((movement) => movement > 0)
+    .reduce((acc, movement) => acc + movement, 0);
+
+  const out = movements
+    .filter((movement) => movement < 0)
+    .reduce((acc, movement) => acc + movement, 0);
+
+  const interest = movements
+    .filter((movement) => movement > 0)
+    .map((deposit) => (deposit * 1.2) / 100)
+    .filter((int) => int > 1)
+    .reduce((acc, int) => acc + int, 0);
+
+  labelSumIn.textContent = `${incomes}€`;
+  labelSumOut.textContent = `${out}€`;
+  labelSumInterest.textContent = `${interest}€`;
+};
+
+displaySummary(account1.movements);
+
+const createUsernames = function (accounts) {
+  accounts.forEach(function (account) {
+    account.username = account.owner
+      .split(" ")
+      .map((string) => string.at(0).toLocaleLowerCase())
+      .join("");
+  });
+};
+
+createUsernames(accounts);

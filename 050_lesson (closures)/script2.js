@@ -1,4 +1,4 @@
-// Example 2
+// Example 1
 let f;
 
 const g = function () {
