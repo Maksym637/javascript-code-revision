@@ -61,10 +61,14 @@ const checkMovementType = function (movement) {
   return movement > 0 ? "deposit" : "withdrawal";
 };
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = "";
 
-  movements.forEach(function (movement, idx) {
+  const movementsSorted = sort
+    ? movements.slice().sort((a, b) => a - b)
+    : movements;
+
+  movementsSorted.forEach(function (movement, idx) {
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${checkMovementType(
@@ -78,30 +82,26 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
-
-const displayBalance = function (movements) {
-  const balance = movements.reduce(
+const displayBalance = function (account) {
+  account.balance = account.movements.reduce(
     (accumulator, movement) => accumulator + movement,
     0
   );
-  labelBalance.textContent = `${balance} EUR`;
+  labelBalance.textContent = `${account.balance} EUR`;
 };
 
-displayBalance(account1.movements);
-
-const displaySummary = function (movements) {
-  const incomes = movements
+const displaySummary = function (account) {
+  const incomes = account.movements
     .filter((movement) => movement > 0)
     .reduce((acc, movement) => acc + movement, 0);
 
-  const out = movements
+  const out = account.movements
     .filter((movement) => movement < 0)
     .reduce((acc, movement) => acc + movement, 0);
 
-  const interest = movements
+  const interest = account.movements
     .filter((movement) => movement > 0)
-    .map((deposit) => (deposit * 1.2) / 100)
+    .map((deposit) => (deposit * account.interestRate) / 100)
     .filter((int) => int > 1)
     .reduce((acc, int) => acc + int, 0);
 
@@ -109,8 +109,6 @@ const displaySummary = function (movements) {
   labelSumOut.textContent = `${out}€`;
   labelSumInterest.textContent = `${interest}€`;
 };
-
-displaySummary(account1.movements);
 
 const createUsernames = function (accounts) {
   accounts.forEach(function (account) {
@@ -122,3 +120,99 @@ const createUsernames = function (accounts) {
 };
 
 createUsernames(accounts);
+
+const updateUI = function (account) {
+  displayMovements(account.movements);
+  displayBalance(account);
+  displaySummary(account);
+};
+
+let currentAccount;
+
+btnLogin.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  currentAccount = accounts.find(
+    (acc) => acc.username == inputLoginUsername.value
+  );
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }`;
+
+    containerApp.style.opacity = 100;
+
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    updateUI(currentAccount);
+  }
+});
+
+btnTransfer.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  const amount = Number(inputTransferAmount.value);
+  const receiverAccount = accounts.find(
+    (account) => account.username === inputTransferTo.value
+  );
+
+  inputTransferAmount.value = inputTransferTo.value = "";
+
+  if (
+    amount > 0 &&
+    receiverAccount &&
+    currentAccount.balance >= amount &&
+    receiverAccount?.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-amount);
+    receiverAccount.movements.push(amount);
+
+    updateUI(currentAccount);
+  }
+});
+
+btnLoan.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (
+    amount > 0 &&
+    currentAccount.movements.some((movement) => movement >= 0.1 * amount)
+  ) {
+    currentAccount.movements.push(amount);
+
+    updateUI(currentAccount);
+  }
+
+  inputLoanAmount.value = "";
+});
+
+btnClose.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    inputClosePin.value === Number(currentAccount.pin)
+  ) {
+    const index = accounts.findIndex(
+      (account) => account.username === currentAccount.username
+    );
+    accounts.splice(index, 1);
+
+    containerApp.style.opacity = 0;
+  }
+
+  inputTransferAmount.value = inputTransferTo.value = "";
+});
+
+let sorted = false;
+
+btnSort.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
