@@ -20,6 +20,8 @@ const btnRight = document.querySelector(".slider__btn--right");
 
 const dotContainer = document.querySelector(".dots");
 
+const imgTargets = document.querySelectorAll("img[data-src]");
+
 const openModal = function (event) {
   event.preventDefault();
 
@@ -193,3 +195,26 @@ dotContainer.addEventListener("click", function (event) {
     activateDot(slide);
   }
 });
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) {
+    return;
+  }
+
+  entry.target.src = entry.target.dataset.src;
+
+  entry.target.addEventListener("load", function () {
+    entry.target.classList.remove("lazy-img");
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+});
+
+imgTargets.forEach((img) => imgObserver.observe(img));
