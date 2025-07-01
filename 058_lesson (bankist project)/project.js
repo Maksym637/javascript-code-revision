@@ -22,6 +22,8 @@ const dotContainer = document.querySelector(".dots");
 
 const imgTargets = document.querySelectorAll("img[data-src]");
 
+const allSections = document.querySelectorAll(".section");
+
 const openModal = function (event) {
   event.preventDefault();
 
@@ -218,3 +220,21 @@ const imgObserver = new IntersectionObserver(loadImg, {
 });
 
 imgTargets.forEach((img) => imgObserver.observe(img));
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+
+  if (entry.isIntersecting) {
+    entry.target.classList.remove("section--hidden");
+  }
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add("section--hidden");
+});
