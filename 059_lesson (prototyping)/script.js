@@ -1,7 +1,14 @@
+/**
+ * 1. New {} is created
+ * 2. function is called, this = {}
+ * 3. {} linked to prototype
+ * 4. function automatically return {}
+ */
 const Person = function (firstName, birthYear) {
   this.firstName = firstName;
   this.birthYear = birthYear;
 
+  // Never create functions inside a class
   this.calculateAge = function () {
     return 2025 - this.birthYear;
   };
