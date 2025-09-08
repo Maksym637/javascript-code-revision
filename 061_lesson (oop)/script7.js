@@ -38,6 +38,10 @@ class Account {
   checkLoan() {
     return this.#approveLoan();
   }
+
+  static calculate() {
+    console.log("Perform calculations");
+  }
 }
 
 const account1 = new Account("Maksym", "EUR", 1111);
@@ -47,3 +51,5 @@ account1.deposit(250);
 account1.withdraw(100);
 console.log(account1.getMovements());
 console.log(account1.checkLoan());
+
+Account.calculate();
