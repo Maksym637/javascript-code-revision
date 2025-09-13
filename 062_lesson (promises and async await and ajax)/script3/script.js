@@ -11,4 +11,4 @@ const getCountryData = function (country) {
     .catch((error) => console.log(error));
 };
 
-getCountryData("ABOBA");
+getCountryData("portugal");
